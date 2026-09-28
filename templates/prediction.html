@@ -1,0 +1,2194 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Real-Time Behaviour Prediction</title>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+>
+
+
+<style>
+
+    /* =====================================================
+       GLOBAL
+    ===================================================== */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+
+    body {
+
+        font-family: 'Inter', Arial, sans-serif;
+
+        color: #e2e8f0;
+
+        min-height: 100vh;
+
+        overflow-x: hidden;
+
+        background:
+
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(99,102,241,.20),
+                transparent 25%
+            ),
+
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(14,165,233,.15),
+                transparent 25%
+            ),
+
+            radial-gradient(
+                circle at 50% 80%,
+                rgba(124,58,237,.10),
+                transparent 30%
+            ),
+
+            #070b17;
+    }
+
+
+    /* =====================================================
+       BACKGROUND GLOW
+    ===================================================== */
+
+    .background-glow {
+
+        position: fixed;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        z-index: -1;
+
+        overflow: hidden;
+    }
+
+
+    .glow-orb {
+
+        position: absolute;
+
+        border-radius: 50%;
+
+        filter: blur(75px);
+
+        opacity: .25;
+
+        animation:
+            orbFloat 10s ease-in-out infinite;
+    }
+
+
+    .orb1 {
+
+        width: 320px;
+
+        height: 320px;
+
+        background: #2563eb;
+
+        top: -80px;
+
+        left: -100px;
+    }
+
+
+    .orb2 {
+
+        width: 280px;
+
+        height: 280px;
+
+        background: #7c3aed;
+
+        right: -100px;
+
+        top: 35%;
+
+        animation-delay: 2s;
+    }
+
+
+    .orb3 {
+
+        width: 250px;
+
+        height: 250px;
+
+        background: #06b6d4;
+
+        bottom: -80px;
+
+        left: 40%;
+
+        animation-delay: 4s;
+    }
+
+
+    /* =====================================================
+       TOP NAVIGATION
+    ===================================================== */
+
+    .top-bar {
+
+        width: 100%;
+
+        padding: 20px 6%;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        border-bottom:
+            1px solid
+            rgba(148,163,184,.10);
+
+        background:
+            rgba(2,6,23,.45);
+
+        backdrop-filter:
+            blur(20px);
+
+        position: relative;
+
+        z-index: 10;
+    }
+
+
+    .brand {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        color: white;
+
+        font-size: 14px;
+
+        font-weight: 800;
+
+        letter-spacing: .5px;
+    }
+
+
+    .brand-icon {
+
+        width: 36px;
+
+        height: 36px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+        box-shadow:
+            0 0 25px
+            rgba(59,130,246,.25);
+    }
+
+
+    .status {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        color: #94a3b8;
+
+        font-size: 11px;
+
+        font-weight: 600;
+    }
+
+
+    .status-dot {
+
+        width: 8px;
+
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #22c55e;
+
+        box-shadow:
+            0 0 12px #22c55e;
+
+        animation:
+            livePulse 1.5s infinite;
+    }
+
+
+    /* =====================================================
+       MAIN
+    ===================================================== */
+
+    .page {
+
+        width: 92%;
+
+        max-width: 1150px;
+
+        margin: 45px auto 70px;
+    }
+
+
+    /* =====================================================
+       HERO
+    ===================================================== */
+
+    .hero {
+
+        position: relative;
+
+        text-align: center;
+
+        margin-bottom: 35px;
+
+        animation:
+            fadeUp .8s ease;
+    }
+
+
+    .badge {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 9px 16px;
+
+        border-radius: 50px;
+
+        background:
+            rgba(99,102,241,.13);
+
+        border:
+            1px solid
+            rgba(129,140,248,.30);
+
+        color: #c7d2fe;
+
+        font-size: 11px;
+
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        box-shadow:
+            0 0 25px
+            rgba(99,102,241,.12);
+
+        margin-bottom: 20px;
+    }
+
+
+    .hero h1 {
+
+        color: white;
+
+        font-size:
+            clamp(34px, 5vw, 55px);
+
+        line-height: 1.08;
+
+        letter-spacing: -2px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .hero h1 span {
+
+        background:
+            linear-gradient(
+                90deg,
+                #60a5fa,
+                #a78bfa,
+                #22d3ee
+            );
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        background-size: 200% auto;
+
+        animation:
+            gradientMove 4s linear infinite;
+    }
+
+
+    .hero p {
+
+        max-width: 650px;
+
+        margin: auto;
+
+        color: #94a3b8;
+
+        line-height: 1.7;
+
+        font-size: 14px;
+    }
+
+
+    /* =====================================================
+       MAIN GRID
+    ===================================================== */
+
+    .content-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 340px;
+
+        gap: 25px;
+
+        align-items: start;
+    }
+
+
+    /* =====================================================
+       FORM CARD
+    ===================================================== */
+
+    .form-card {
+
+        position: relative;
+
+        padding: 32px;
+
+        border-radius: 24px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(15,23,42,.96),
+                rgba(17,24,39,.90)
+            );
+
+        border:
+            1px solid
+            rgba(148,163,184,.14);
+
+        backdrop-filter:
+            blur(20px);
+
+        box-shadow:
+            0 25px 60px
+            rgba(0,0,0,.25);
+
+        overflow: hidden;
+
+        animation:
+            slideLeft .9s ease;
+    }
+
+
+    .form-card::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 3px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #7c3aed,
+                #06b6d4
+            );
+
+        background-size:
+            200% auto;
+
+        animation:
+            gradientMove 3s linear infinite;
+    }
+
+
+    .form-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 250px;
+
+        height: 250px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(59,130,246,.04);
+
+        right: -120px;
+
+        top: -120px;
+
+        pointer-events: none;
+    }
+
+
+    .form-title {
+
+        position: relative;
+
+        z-index: 2;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .form-title-icon {
+
+        width: 42px;
+
+        height: 42px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background:
+            rgba(59,130,246,.12);
+
+        border:
+            1px solid
+            rgba(96,165,250,.20);
+
+        font-size: 20px;
+
+        box-shadow:
+            0 0 25px
+            rgba(59,130,246,.08);
+    }
+
+
+    .form-title h2 {
+
+        color: white;
+
+        font-size: 20px;
+    }
+
+
+    .form-description {
+
+        position: relative;
+
+        z-index: 2;
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        margin-bottom: 25px;
+
+        margin-left: 54px;
+    }
+
+
+    /* =====================================================
+       FORM GRID
+    ===================================================== */
+
+    .form-grid {
+
+        position: relative;
+
+        z-index: 2;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 17px;
+    }
+
+
+    .form-group {
+
+        position: relative;
+    }
+
+
+    .form-group.full {
+
+        grid-column:
+            1 / -1;
+    }
+
+
+    label {
+
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #cbd5e1;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        letter-spacing: .2px;
+    }
+
+
+    .input-wrapper {
+
+        position: relative;
+    }
+
+
+    .input-icon {
+
+        position: absolute;
+
+        left: 12px;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        font-size: 14px;
+
+        opacity: .65;
+
+        pointer-events: none;
+
+        z-index: 2;
+    }
+
+
+    input {
+
+        width: 100%;
+
+        padding:
+            12px 13px 12px 38px;
+
+        border:
+            1px solid
+            #334155;
+
+        border-radius: 11px;
+
+        background:
+            rgba(15,23,42,.85);
+
+        color: #f1f5f9;
+
+        font-size: 13px;
+
+        outline: none;
+
+        transition:
+            .3s ease;
+    }
+
+
+    input::placeholder {
+
+        color: #475569;
+    }
+
+
+    input:hover {
+
+        border-color:
+            #475569;
+    }
+
+
+    input:focus {
+
+        border-color:
+            #6366f1;
+
+        background:
+            rgba(15,23,42,1);
+
+        box-shadow:
+            0 0 0 3px
+            rgba(99,102,241,.10),
+
+            0 0 25px
+            rgba(99,102,241,.08);
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    /* Remove number arrows */
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+
+        opacity: .5;
+    }
+
+
+    /* =====================================================
+       PREDICT BUTTON
+    ===================================================== */
+
+    .predict-button {
+
+        position: relative;
+
+        z-index: 2;
+
+        width: 100%;
+
+        margin-top: 24px;
+
+        padding: 15px;
+
+        border: none;
+
+        border-radius: 12px;
+
+        color: white;
+
+        font-family: inherit;
+
+        font-size: 14px;
+
+        font-weight: 800;
+
+        cursor: pointer;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed,
+                #06b6d4
+            );
+
+        background-size:
+            200% 200%;
+
+        box-shadow:
+            0 12px 35px
+            rgba(37,99,235,.25);
+
+        animation:
+            buttonGradient 4s ease infinite;
+
+        transition:
+            .3s ease;
+    }
+
+
+    .predict-button:hover {
+
+        transform:
+            translateY(-4px);
+
+        box-shadow:
+            0 20px 45px
+            rgba(37,99,235,.38);
+    }
+
+
+    .predict-button:active {
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    .button-arrow {
+
+        margin-left: 5px;
+
+        transition: .3s;
+    }
+
+
+    .predict-button:hover
+    .button-arrow {
+
+        transform:
+            translateX(5px);
+
+        display: inline-block;
+    }
+
+
+    /* =====================================================
+       SIDE INFORMATION
+    ===================================================== */
+
+    .side-column {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 20px;
+
+        animation:
+            slideRight .9s ease;
+    }
+
+
+    .info-card {
+
+        position: relative;
+
+        padding: 25px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(30,41,59,.78),
+                rgba(15,23,42,.88)
+            );
+
+        border:
+            1px solid
+            rgba(148,163,184,.13);
+
+        backdrop-filter:
+            blur(18px);
+
+        overflow: hidden;
+
+        transition: .3s;
+    }
+
+
+    .info-card:hover {
+
+        transform:
+            translateY(-5px);
+
+        border-color:
+            rgba(96,165,250,.28);
+
+        box-shadow:
+            0 20px 45px
+            rgba(0,0,0,.25);
+    }
+
+
+    .info-icon {
+
+        font-size: 30px;
+
+        margin-bottom: 13px;
+    }
+
+
+    .info-card h3 {
+
+        color: white;
+
+        font-size: 16px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .info-card p {
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       ML STEPS
+    ===================================================== */
+
+    .steps {
+
+        margin-top: 17px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 11px;
+    }
+
+
+    .step {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 11px;
+
+        padding: 10px;
+
+        border-radius: 10px;
+
+        background:
+            rgba(15,23,42,.65);
+
+        border:
+            1px solid
+            rgba(148,163,184,.08);
+    }
+
+
+    .step-number {
+
+        width: 27px;
+
+        height: 27px;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background:
+            rgba(59,130,246,.13);
+
+        color: #60a5fa;
+
+        font-size: 11px;
+
+        font-weight: 800;
+    }
+
+
+    .step span {
+
+        color: #94a3b8;
+
+        font-size: 11px;
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       RESULT
+    ===================================================== */
+
+    .result-section {
+
+        margin-top: 25px;
+
+        padding: 30px;
+
+        border-radius: 22px;
+
+        text-align: center;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(15,23,42,.96),
+                rgba(17,24,39,.92)
+            );
+
+        border:
+            1px solid
+            rgba(96,165,250,.25);
+
+        box-shadow:
+            0 20px 60px
+            rgba(0,0,0,.25),
+
+            0 0 40px
+            rgba(59,130,246,.08);
+
+        animation:
+            resultAppear .7s ease;
+    }
+
+
+    .result-icon {
+
+        width: 65px;
+
+        height: 65px;
+
+        margin:
+            0 auto 15px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 30px;
+
+        background:
+            rgba(34,197,94,.10);
+
+        border:
+            1px solid
+            rgba(74,222,128,.25);
+
+        box-shadow:
+            0 0 30px
+            rgba(34,197,94,.10);
+
+        animation:
+            resultPulse 2s ease-in-out infinite;
+    }
+
+
+    .result-section h2 {
+
+        color: white;
+
+        font-size: 22px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .behaviour-result {
+
+        display: inline-block;
+
+        padding:
+            10px 20px;
+
+        border-radius: 30px;
+
+        color: #4ade80;
+
+        background:
+            rgba(34,197,94,.10);
+
+        border:
+            1px solid
+            rgba(74,222,128,.25);
+
+        font-size: 17px;
+
+        font-weight: 800;
+
+        box-shadow:
+            0 0 25px
+            rgba(34,197,94,.08);
+
+        margin-bottom: 13px;
+    }
+
+
+    .cluster-text {
+
+        color: #94a3b8;
+
+        font-size: 12px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .result-description {
+
+        max-width: 600px;
+
+        margin: auto;
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       BACK BUTTON
+    ===================================================== */
+
+    .back-button {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 20px;
+
+        padding:
+            10px 17px;
+
+        border-radius: 10px;
+
+        color: #cbd5e1;
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        background:
+            rgba(51,65,85,.45);
+
+        border:
+            1px solid
+            rgba(148,163,184,.12);
+
+        transition: .3s;
+    }
+
+
+    .back-button:hover {
+
+        color: white;
+
+        background:
+            rgba(59,130,246,.14);
+
+        border-color:
+            rgba(96,165,250,.3);
+
+        transform:
+            translateY(-3px);
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .footer {
+
+        text-align: center;
+
+        padding:
+            25px;
+
+        border-top:
+            1px solid
+            rgba(148,163,184,.08);
+
+        color: #64748b;
+
+        font-size: 11px;
+    }
+
+
+    .footer-title {
+
+        color: #94a3b8;
+
+        font-size: 12px;
+
+        margin-bottom: 7px;
+    }
+
+
+    /* =====================================================
+       ANIMATIONS
+    ===================================================== */
+
+    @keyframes fadeUp {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateY(30px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+    }
+
+
+    @keyframes slideLeft {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateX(-40px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateX(0);
+        }
+    }
+
+
+    @keyframes slideRight {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateX(40px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateX(0);
+        }
+    }
+
+
+    @keyframes resultAppear {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateY(25px)
+                scale(.96);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0)
+                scale(1);
+        }
+    }
+
+
+    @keyframes resultPulse {
+
+        0%,
+        100% {
+
+            transform:
+                scale(1);
+        }
+
+        50% {
+
+            transform:
+                scale(1.08);
+        }
+    }
+
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+
+            transform:
+                scale(1);
+
+            opacity: 1;
+        }
+
+        50% {
+
+            transform:
+                scale(1.7);
+
+            opacity: .5;
+        }
+    }
+
+
+    @keyframes orbFloat {
+
+        0%,
+        100% {
+
+            transform:
+                translate(0,0)
+                scale(1);
+        }
+
+        50% {
+
+            transform:
+                translate(50px,-40px)
+                scale(1.15);
+        }
+    }
+
+
+    @keyframes gradientMove {
+
+        0% {
+
+            background-position:
+                0% center;
+        }
+
+        100% {
+
+            background-position:
+                200% center;
+        }
+    }
+
+
+    @keyframes buttonGradient {
+
+        0%,
+        100% {
+
+            background-position:
+                0% 50%;
+        }
+
+        50% {
+
+            background-position:
+                100% 50%;
+        }
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 850px) {
+
+        .content-grid {
+
+            grid-template-columns: 1fr;
+        }
+
+
+        .side-column {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .top-bar {
+
+            padding:
+                16px 5%;
+        }
+
+
+        .brand {
+
+            font-size: 12px;
+        }
+
+
+        .status {
+
+            font-size: 9px;
+        }
+
+
+        .page {
+
+            width: 94%;
+
+            margin-top: 30px;
+        }
+
+
+        .hero h1 {
+
+            font-size: 36px;
+
+            letter-spacing:
+                -1.5px;
+        }
+
+
+        .hero p {
+
+            font-size: 12px;
+        }
+
+
+        .form-card {
+
+            padding: 22px 17px;
+        }
+
+
+        .form-grid {
+
+            grid-template-columns: 1fr;
+        }
+
+
+        .form-group.full {
+
+            grid-column: auto;
+        }
+
+
+        .side-column {
+
+            display: flex;
+        }
+
+
+        .result-section {
+
+            padding: 25px 17px;
+        }
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<div class="background-glow">
+
+
+<div class="glow-orb orb1"></div>
+
+<div class="glow-orb orb2"></div>
+
+<div class="glow-orb orb3"></div>
+
+
+</div>
+
+<!-- =====================================================
+     TOP BAR
+===================================================== -->
+
+<div class="top-bar">
+
+
+<div class="brand">
+
+    <div class="brand-icon">
+
+        🧠
+
+    </div>
+
+    STUDENT BEHAVIOUR AI
+
+</div>
+
+
+<div class="status">
+
+    <span class="status-dot"></span>
+
+    MODEL ONLINE
+
+</div>
+
+
+</div>
+
+<!-- =====================================================
+     MAIN PAGE
+===================================================== -->
+
+<main class="page">
+
+
+<!-- =================================================
+     HERO
+================================================== -->
+
+<section class="hero">
+
+
+    <div class="badge">
+
+        <span class="status-dot"></span>
+
+        REAL-TIME MACHINE LEARNING
+
+    </div>
+
+
+    <h1>
+
+        Student Behaviour
+
+        <span>Prediction</span>
+
+    </h1>
+
+
+    <p>
+
+        Enter student performance and engagement data
+        below. The trained K-Means model will analyze
+        the information and identify the student's
+        behavioural cluster.
+
+    </p>
+
+
+</section>
+
+
+
+<!-- =================================================
+     CONTENT GRID
+================================================== -->
+
+<div class="content-grid">
+
+
+    <!-- =============================================
+         FORM
+    ============================================== -->
+
+    <div class="form-card">
+
+
+        <div class="form-title">
+
+
+            <div class="form-title-icon">
+
+                🤖
+
+            </div>
+
+
+            <h2>
+
+                Student Data
+
+            </h2>
+
+
+        </div>
+
+
+        <p class="form-description">
+
+            Provide the following information for
+            machine-learning prediction.
+
+        </p>
+
+
+
+        <form
+            action="/predict"
+            method="POST"
+        >
+
+
+            <div class="form-grid">
+
+
+                <!-- Attendance -->
+
+                <div class="form-group">
+
+                    <label>
+                        Attendance (%)
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📅
+                        </span>
+
+                        <input
+                            type="number"
+                            name="attendance"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 85"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Study Hours -->
+
+                <div class="form-group">
+
+                    <label>
+                        Study Hours
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📚
+                        </span>
+
+                        <input
+                            type="number"
+                            name="study_hours"
+                            step="0.1"
+                            min="0"
+                            placeholder="e.g. 4.5"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Assignment -->
+
+                <div class="form-group">
+
+                    <label>
+                        Assignment Score
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📝
+                        </span>
+
+                        <input
+                            type="number"
+                            name="assignment_score"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 85"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Quiz -->
+
+                <div class="form-group">
+
+                    <label>
+                        Quiz Score
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🎯
+                        </span>
+
+                        <input
+                            type="number"
+                            name="quiz_score"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 80"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Participation -->
+
+                <div class="form-group">
+
+                    <label>
+                        Participation (%)
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🙋
+                        </span>
+
+                        <input
+                            type="number"
+                            name="participation"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 75"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LMS -->
+
+                <div class="form-group">
+
+                    <label>
+                        LMS Activity
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            💻
+                        </span>
+
+                        <input
+                            type="number"
+                            name="lms_activity"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 80"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Late submissions -->
+
+                <div class="form-group">
+
+                    <label>
+                        Late Submissions
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ⏰
+                        </span>
+
+                        <input
+                            type="number"
+                            name="late_submissions"
+                            min="0"
+                            placeholder="e.g. 2"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Previous performance -->
+
+                <div class="form-group">
+
+                    <label>
+                        Previous Performance
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📈
+                        </span>
+
+                        <input
+                            type="number"
+                            name="previous_performance"
+                            step="0.1"
+                            min="0"
+                            max="100"
+                            placeholder="e.g. 78"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Screen time -->
+
+                <div class="form-group full">
+
+                    <label>
+                        Screen Time (hours)
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🖥️
+                        </span>
+
+                        <input
+                            type="number"
+                            name="screen_time"
+                            step="0.1"
+                            min="0"
+                            placeholder="e.g. 3.5"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="predict-button"
+            >
+
+                🔮 Predict Student Behaviour
+
+                <span class="button-arrow">
+                    →
+                </span>
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+
+    <!-- =============================================
+         SIDE COLUMN
+    ============================================== -->
+
+    <div class="side-column">
+
+
+        <!-- ML INFO -->
+
+        <div class="info-card">
+
+
+            <div class="info-icon">
+
+                🧠
+
+            </div>
+
+
+            <h3>
+
+                How It Works
+
+            </h3>
+
+
+            <p>
+
+                Your input is standardized using the
+                trained scaler and then passed to the
+                K-Means clustering model.
+
+            </p>
+
+
+            <div class="steps">
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        1
+                    </div>
+
+                    <span>
+                        Enter student data
+                    </span>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        2
+                    </div>
+
+                    <span>
+                        Scale the input data
+                    </span>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        3
+                    </div>
+
+                    <span>
+                        K-Means prediction
+                    </span>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        4
+                    </div>
+
+                    <span>
+                        Behaviour classification
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- MODEL INFO -->
+
+        <div class="info-card">
+
+
+            <div class="info-icon">
+
+                📊
+
+            </div>
+
+
+            <h3>
+
+                ML Model
+
+            </h3>
+
+
+            <p>
+
+                The system uses unsupervised machine
+                learning to identify behavioural
+                patterns from multiple student
+                performance features.
+
+            </p>
+
+
+            <div class="steps">
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        K
+                    </div>
+
+                    <span>
+                        K-Means Clustering
+                    </span>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        P
+                    </div>
+
+                    <span>
+                        PCA Visualization
+                    </span>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        D
+                    </div>
+
+                    <span>
+                        DBSCAN Analysis
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =================================================
+     PREDICTION RESULT
+================================================== -->
+
+{% if behaviour %}
+
+
+<div class="result-section">
+
+
+    <div class="result-icon">
+
+        ✓
+
+    </div>
+
+
+    <h2>
+
+        Prediction Result
+
+    </h2>
+
+
+    <div class="behaviour-result">
+
+        {{ behaviour }}
+
+    </div>
+
+
+    <p class="cluster-text">
+
+        Assigned K-Means Cluster:
+
+        <strong>
+            {{ cluster }}
+        </strong>
+
+    </p>
+
+
+    <p class="result-description">
+
+        The student's behaviour was analyzed using
+        the trained K-Means machine learning model.
+        The result represents the behavioural pattern
+        identified from the submitted input features.
+
+    </p>
+
+
+    <a
+        href="/"
+        class="back-button"
+    >
+
+        ← Return to Dashboard
+
+    </a>
+
+
+</div>
+
+
+{% endif %}
+
+<!-- BOTTOM DASHBOARD BUTTON -->
+<div style="text-align:center; margin:35px 0 10px;">
+    <a href="/" class="back-button">
+        🏠 Go to Dashboard
+    </a>
+</div>
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+
+<div class="footer-title">
+
+    🧠 Real-Time Student Behaviour Analysis
+
+</div>
+
+
+<div>
+
+    K-Means Clustering
+
+    <span style="color:#3b82f6;">
+        •
+    </span>
+
+    PCA
+
+    <span style="color:#8b5cf6;">
+        •
+    </span>
+
+    DBSCAN
+
+    <span style="color:#06b6d4;">
+        •
+    </span>
+
+    Machine Learning
+
+</div>
+
+
+</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,2890 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Behaviour Analysis | AI Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+    /* =====================================================
+       GLOBAL
+    ===================================================== */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', Arial, sans-serif;
+
+        color: #e2e8f0;
+
+        min-height: 100vh;
+
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(99,102,241,.20),
+                transparent 25%
+            ),
+
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(14,165,233,.15),
+                transparent 25%
+            ),
+
+            radial-gradient(
+                circle at 50% 80%,
+                rgba(124,58,237,.10),
+                transparent 30%
+            ),
+
+            #070b17;
+
+        overflow-x: hidden;
+    }
+
+
+    /* =====================================================
+       ANIMATED BACKGROUND
+    ===================================================== */
+
+    .background-glow {
+
+        position: fixed;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        z-index: -1;
+
+        overflow: hidden;
+    }
+
+
+    .glow-orb {
+
+        position: absolute;
+
+        border-radius: 50%;
+
+        filter: blur(70px);
+
+        opacity: .25;
+
+        animation:
+            orbFloat 10s ease-in-out infinite;
+    }
+
+
+    .orb1 {
+
+        width: 300px;
+        height: 300px;
+
+        background: #2563eb;
+
+        top: 5%;
+        left: -100px;
+    }
+
+
+    .orb2 {
+
+        width: 250px;
+        height: 250px;
+
+        background: #7c3aed;
+
+        top: 40%;
+        right: -80px;
+
+        animation-delay: 2s;
+    }
+
+
+    .orb3 {
+
+        width: 220px;
+        height: 220px;
+
+        background: #06b6d4;
+
+        bottom: 5%;
+        left: 35%;
+
+        animation-delay: 4s;
+    }
+
+
+    /* =====================================================
+       HERO HEADER
+    ===================================================== */
+
+    .header {
+
+        position: relative;
+
+        min-height: 590px;
+
+        overflow: hidden;
+
+        display: flex;
+
+        align-items: center;
+
+        padding: 70px 7%;
+
+        background:
+            linear-gradient(
+                135deg,
+                #050816 0%,
+                #101936 45%,
+                #172554 100%
+            );
+
+        border-bottom:
+            1px solid rgba(255,255,255,.08);
+    }
+
+
+    .header::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 700px;
+        height: 700px;
+
+        border-radius: 50%;
+
+        border:
+            1px solid rgba(96,165,250,.08);
+
+        right: -250px;
+        top: -300px;
+
+        animation:
+            rotateSlow 25s linear infinite;
+    }
+
+
+    .header::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 500px;
+        height: 500px;
+
+        border-radius: 50%;
+
+        border:
+            1px solid rgba(167,139,250,.08);
+
+        left: -250px;
+        bottom: -300px;
+
+        animation:
+            rotateSlow 20s linear infinite reverse;
+    }
+
+
+    /* =====================================================
+       HERO CONTENT
+    ===================================================== */
+
+    .header-content {
+
+        position: relative;
+
+        z-index: 5;
+
+        max-width: 600px;
+
+        animation:
+            slideLeft 1s ease;
+    }
+
+
+    .badge {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 9px 16px;
+
+        border-radius: 50px;
+
+        background:
+            rgba(99,102,241,.13);
+
+        border:
+            1px solid rgba(129,140,248,.3);
+
+        color: #c7d2fe;
+
+        font-size: 12px;
+
+        font-weight: 800;
+
+        letter-spacing: 1px;
+
+        box-shadow:
+            0 0 25px rgba(99,102,241,.12);
+
+        margin-bottom: 22px;
+
+        backdrop-filter: blur(15px);
+    }
+
+
+    .live-dot {
+
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #22c55e;
+
+        box-shadow:
+            0 0 10px #22c55e;
+
+        animation:
+            livePulse 1.5s infinite;
+    }
+
+
+    .header h1 {
+
+        font-size:
+            clamp(40px, 5vw, 68px);
+
+        line-height: 1.04;
+
+        letter-spacing: -3px;
+
+        margin-bottom: 22px;
+
+        color: white;
+    }
+
+
+    .header h1 span {
+
+        background:
+            linear-gradient(
+                90deg,
+                #60a5fa,
+                #a78bfa,
+                #22d3ee
+            );
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        background-size: 200% auto;
+
+        animation:
+            gradientMove 4s linear infinite;
+    }
+
+
+    .header p {
+
+        color: #a5b4fc;
+
+        font-size: 17px;
+
+        line-height: 1.8;
+
+        max-width: 570px;
+    }
+
+
+    /* =====================================================
+       TECH TAGS
+    ===================================================== */
+
+    .tech-tags {
+
+        display: flex;
+
+        gap: 10px;
+
+        flex-wrap: wrap;
+
+        margin-top: 28px;
+    }
+
+
+    .tech-tag {
+
+        padding: 8px 13px;
+
+        border-radius: 9px;
+
+        background:
+            rgba(255,255,255,.06);
+
+        border:
+            1px solid rgba(255,255,255,.1);
+
+        color: #cbd5e1;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        transition: .3s;
+    }
+
+
+    .tech-tag:hover {
+
+        background:
+            rgba(96,165,250,.15);
+
+        border-color:
+            rgba(96,165,250,.4);
+
+        transform:
+            translateY(-3px);
+
+        box-shadow:
+            0 0 20px rgba(96,165,250,.12);
+    }
+
+
+    /* =====================================================
+       HERO IMAGE AREA
+    ===================================================== */
+
+    .hero-animations {
+
+        position: absolute;
+
+        right: 6%;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 520px;
+
+        height: 410px;
+
+        z-index: 3;
+    }
+
+
+    .animation-card {
+
+        position: absolute;
+
+        overflow: hidden;
+
+        border-radius: 24px;
+
+        background:
+            rgba(15,23,42,.65);
+
+        border:
+            1px solid rgba(148,163,184,.2);
+
+        backdrop-filter:
+            blur(20px);
+
+        box-shadow:
+            0 25px 70px rgba(0,0,0,.35),
+            0 0 40px rgba(59,130,246,.12);
+
+        transition:
+            .4s ease;
+
+        isolation: isolate;
+    }
+
+
+    .animation-card:hover {
+
+        transform:
+            translateY(-10px)
+            scale(1.03);
+
+        border-color:
+            rgba(96,165,250,.55);
+
+        box-shadow:
+            0 30px 80px rgba(0,0,0,.45),
+            0 0 50px rgba(59,130,246,.25);
+    }
+
+
+    .animation-card img {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        display: block;
+
+        opacity: .88;
+
+        transform:
+            scale(1.02);
+
+        transition:
+            transform .8s ease,
+            opacity .5s ease;
+
+        filter:
+            saturate(1.15)
+            contrast(1.05);
+    }
+
+
+    .animation-card:hover img {
+
+        transform:
+            scale(1.12);
+
+        opacity: 1;
+    }
+
+
+    /* =====================================================
+       IMAGE OVERLAY
+    ===================================================== */
+
+    .animation-overlay {
+
+        position: absolute;
+
+        inset: 0;
+
+        z-index: 1;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(
+                180deg,
+                rgba(2,6,23,.05),
+                rgba(2,6,23,.15) 45%,
+                rgba(2,6,23,.85)
+            );
+    }
+
+
+    /* =====================================================
+       IMAGE SCANNING EFFECT
+    ===================================================== */
+
+    .animation-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+
+        top: -100%;
+
+        width: 100%;
+
+        height: 35%;
+
+        z-index: 2;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(
+                180deg,
+                transparent,
+                rgba(96,165,250,.22),
+                transparent
+            );
+
+        animation:
+            imageScan 4s linear infinite;
+    }
+
+
+    /* =====================================================
+       MAIN IMAGE
+    ===================================================== */
+
+    .main-animation {
+
+        width: 330px;
+
+        height: 270px;
+
+        right: 70px;
+
+        top: 35px;
+
+        animation:
+            floatCard 6s ease-in-out infinite;
+
+        box-shadow:
+            0 25px 70px rgba(0,0,0,.45),
+            0 0 35px rgba(59,130,246,.22);
+    }
+
+
+    /* =====================================================
+       SMALL IMAGES
+    ===================================================== */
+
+    .small-animation {
+
+        width: 175px;
+
+        height: 135px;
+
+        background:
+            #111827;
+    }
+
+
+    .animation-one {
+
+        left: 0;
+
+        bottom: 20px;
+
+        animation:
+            floatCard 5s ease-in-out infinite,
+            glowBorder 3s infinite;
+    }
+
+
+    .animation-two {
+
+        right: 0;
+
+        bottom: 0;
+
+        animation:
+            floatCard 5.5s ease-in-out infinite 1s,
+            glowBorder 3s infinite 1s;
+    }
+
+
+    /* =====================================================
+       IMAGE LABEL
+    ===================================================== */
+
+    .animation-label {
+
+        position: absolute;
+
+        left: 12px;
+
+        bottom: 12px;
+
+        z-index: 5;
+
+        padding: 7px 11px;
+
+        border-radius: 8px;
+
+        background:
+            rgba(2,6,23,.78);
+
+        border:
+            1px solid rgba(255,255,255,.1);
+
+        color: white;
+
+        font-size: 10px;
+
+        font-weight: 700;
+
+        backdrop-filter:
+            blur(10px);
+
+        box-shadow:
+            0 5px 20px rgba(0,0,0,.25);
+    }
+
+
+    /* =====================================================
+       MAIN CONTAINER
+    ===================================================== */
+
+    .container {
+
+        width: 90%;
+
+        max-width: 1280px;
+
+        margin:
+            -55px auto 60px;
+
+        position: relative;
+
+        z-index: 10;
+    }
+
+
+    /* =====================================================
+       STAT CARDS
+    ===================================================== */
+
+    .cards {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 30px;
+    }
+
+
+    .card {
+
+        position: relative;
+
+        padding: 26px 20px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(30,41,59,.94),
+                rgba(15,23,42,.88)
+            );
+
+        border:
+            1px solid rgba(148,163,184,.15);
+
+        backdrop-filter:
+            blur(20px);
+
+        text-align: center;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 15px 40px rgba(0,0,0,.25);
+
+        animation:
+            fadeUp .8s ease both;
+
+        transition:
+            .35s ease;
+    }
+
+
+    .card::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+
+        height: 3px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #7c3aed,
+                #06b6d4
+            );
+
+        background-size:
+            200% auto;
+
+        animation:
+            gradientMove 3s linear infinite;
+    }
+
+
+    .card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 100px;
+
+        height: 100px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(59,130,246,.08);
+
+        right: -40px;
+
+        bottom: -40px;
+
+        transition: .4s;
+    }
+
+
+    .card:hover {
+
+        transform:
+            translateY(-9px);
+
+        border-color:
+            rgba(96,165,250,.3);
+
+        box-shadow:
+            0 25px 60px rgba(0,0,0,.35),
+            0 0 35px rgba(59,130,246,.08);
+    }
+
+
+    .card:hover::after {
+
+        transform:
+            scale(2);
+    }
+
+
+    .card:nth-child(1) {
+        animation-delay: .1s;
+    }
+
+    .card:nth-child(2) {
+        animation-delay: .2s;
+    }
+
+    .card:nth-child(3) {
+        animation-delay: .3s;
+    }
+
+    .card:nth-child(4) {
+        animation-delay: .4s;
+    }
+
+
+    .card-icon {
+
+        font-size: 30px;
+
+        margin-bottom: 10px;
+
+        filter:
+            drop-shadow(
+                0 0 10px
+                rgba(96,165,250,.35)
+            );
+    }
+
+
+    .card h2 {
+
+        font-size: 38px;
+
+        margin-bottom: 7px;
+
+        color: white;
+    }
+
+
+    .card p {
+
+        color: #94a3b8;
+
+        font-size: 13px;
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       PREDICTION BUTTON
+    ===================================================== */
+
+    .prediction-section {
+
+        text-align: center;
+
+        margin: 35px 0;
+    }
+
+
+    .predict-button {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 12px;
+
+        padding: 16px 28px;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 14px;
+
+        font-weight: 800;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed,
+                #06b6d4
+            );
+
+        background-size:
+            200% 200%;
+
+        box-shadow:
+            0 10px 35px
+            rgba(37,99,235,.25);
+
+        animation:
+            buttonGradient 4s ease infinite;
+
+        transition: .3s;
+    }
+
+
+    .predict-button:hover {
+
+        transform:
+            translateY(-5px)
+            scale(1.03);
+
+        box-shadow:
+            0 20px 45px
+            rgba(37,99,235,.4);
+    }
+
+
+    /* =====================================================
+       COMMON SECTION
+    ===================================================== */
+
+    .section {
+
+        position: relative;
+
+        padding: 32px;
+
+        margin: 28px 0;
+
+        border-radius: 24px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(15,23,42,.94),
+                rgba(17,24,39,.90)
+            );
+
+        border:
+            1px solid rgba(148,163,184,.13);
+
+        backdrop-filter:
+            blur(20px);
+
+        box-shadow:
+            0 20px 50px
+            rgba(0,0,0,.20);
+
+        animation:
+            fadeUp .8s ease;
+    }
+
+
+    .section::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        border-radius: inherit;
+
+        pointer-events: none;
+
+        background:
+            linear-gradient(
+                120deg,
+                rgba(96,165,250,.04),
+                transparent 40%,
+                rgba(167,139,250,.04)
+            );
+    }
+
+
+    .section-title {
+
+        position: relative;
+
+        text-align: center;
+
+        color: white;
+
+        font-size: 23px;
+
+        margin-bottom: 8px;
+    }
+
+
+    .section-subtitle {
+
+        position: relative;
+
+        text-align: center;
+
+        color: #64748b;
+
+        margin-bottom: 25px;
+
+        font-size: 13px;
+    }
+
+
+    /* =====================================================
+       ML PIPELINE
+    ===================================================== */
+
+    .pipeline {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 0;
+
+        margin:
+            25px auto 10px;
+
+        max-width: 1000px;
+    }
+
+
+    .pipeline-step {
+
+        display: flex;
+
+        align-items: center;
+    }
+
+
+    .pipeline-box {
+
+        padding:
+            13px 17px;
+
+        border-radius: 12px;
+
+        background:
+            rgba(30,41,59,.8);
+
+        border:
+            1px solid rgba(148,163,184,.15);
+
+        color: #cbd5e1;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        white-space: nowrap;
+
+        transition: .3s;
+    }
+
+
+    .pipeline-box:hover {
+
+        color: white;
+
+        border-color:
+            #60a5fa;
+
+        box-shadow:
+            0 0 20px
+            rgba(96,165,250,.18);
+
+        transform:
+            translateY(-4px);
+    }
+
+
+    .pipeline-arrow {
+
+        width: 45px;
+
+        height: 2px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #3b82f6,
+                #8b5cf6
+            );
+
+        position: relative;
+    }
+
+
+    .pipeline-arrow::after {
+
+        content: "›";
+
+        position: absolute;
+
+        right: -4px;
+
+        top: -11px;
+
+        color: #818cf8;
+
+        font-size: 20px;
+    }
+
+
+    /* =====================================================
+       CHART
+    ===================================================== */
+
+    .chart-container {
+
+        max-width: 760px;
+
+        margin-left: auto;
+
+        margin-right: auto;
+    }
+
+
+    .chart-wrapper {
+
+        width: 430px;
+
+        height: 430px;
+
+        max-width: 100%;
+
+        margin:
+            20px auto 0;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+
+
+    #behaviourChart {
+
+        max-width: 100%;
+
+        max-height: 100%;
+    }
+
+
+    /* =====================================================
+       STUDENT SELECTOR
+    ===================================================== */
+
+    .student-selector {
+
+        text-align: center;
+    }
+
+
+    .student-selector select {
+
+        position: relative;
+
+        padding:
+            14px 18px;
+
+        width: 300px;
+
+        max-width: 100%;
+
+        border:
+            1px solid #334155;
+
+        border-radius: 12px;
+
+        background:
+            #0f172a;
+
+        color:
+            #e2e8f0;
+
+        font-size: 14px;
+
+        outline: none;
+
+        transition: .3s;
+    }
+
+
+    .student-selector select:focus {
+
+        border-color:
+            #6366f1;
+
+        box-shadow:
+            0 0 0 4px
+            rgba(99,102,241,.12),
+
+            0 0 25px
+            rgba(99,102,241,.08);
+    }
+
+
+    /* =====================================================
+       STUDENT CARD
+    ===================================================== */
+
+    .student-card {
+
+        position: relative;
+
+        margin:
+            28px auto 0;
+
+        max-width: 760px;
+
+        padding: 28px;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(30,64,175,.20),
+                rgba(124,58,237,.16)
+            );
+
+        border:
+            1px solid rgba(96,165,250,.2);
+
+        text-align: left;
+
+        animation:
+            scaleIn .45s ease;
+
+        box-shadow:
+            0 20px 50px
+            rgba(0,0,0,.20);
+    }
+
+
+    .student-card h3 {
+
+        color: #93c5fd;
+
+        margin-bottom: 15px;
+    }
+
+
+    .student-card p {
+
+        display: inline-block;
+
+        width: 48%;
+
+        margin: 8px 0;
+
+        color: #94a3b8;
+
+        font-size: 13px;
+    }
+
+
+    .student-card strong {
+
+        color: #e2e8f0;
+    }
+
+
+    /* =====================================================
+       TABLE
+    ===================================================== */
+
+    .table-container {
+
+        overflow-x: auto;
+    }
+
+
+    table {
+
+        width: 100%;
+
+        border-collapse:
+            separate;
+
+        border-spacing: 0;
+
+        min-width: 950px;
+
+        overflow: hidden;
+
+        border-radius: 14px;
+    }
+
+
+    th,
+    td {
+
+        padding:
+            15px 12px;
+
+        text-align: center;
+    }
+
+
+    th {
+
+        background:
+            linear-gradient(
+                135deg,
+                #172033,
+                #1e293b
+            );
+
+        color:
+            #cbd5e1;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        border-bottom:
+            1px solid #334155;
+    }
+
+
+    td {
+
+        background:
+            rgba(15,23,42,.75);
+
+        color:
+            #94a3b8;
+
+        border-bottom:
+            1px solid
+            rgba(51,65,85,.5);
+
+        font-size: 12px;
+    }
+
+
+    tbody tr {
+
+        transition: .25s;
+    }
+
+
+    tbody tr:hover td {
+
+        background:
+            rgba(30,41,59,.95);
+
+        color: white;
+    }
+
+
+    /* =====================================================
+       BEHAVIOUR BADGES
+    ===================================================== */
+
+    .low,
+    .moderate,
+    .high {
+
+        display: inline-block;
+
+        padding:
+            7px 11px;
+
+        border-radius: 30px;
+
+        font-weight: 700;
+
+        font-size: 11px;
+
+        border: 1px solid;
+    }
+
+
+    .low {
+
+        background:
+            rgba(239,68,68,.10);
+
+        color:
+            #f87171;
+
+        border-color:
+            rgba(248,113,113,.25);
+
+        box-shadow:
+            0 0 15px
+            rgba(239,68,68,.08);
+    }
+
+
+    .moderate {
+
+        background:
+            rgba(245,158,11,.10);
+
+        color:
+            #fbbf24;
+
+        border-color:
+            rgba(251,191,36,.25);
+
+        box-shadow:
+            0 0 15px
+            rgba(245,158,11,.08);
+    }
+
+
+    .high {
+
+        background:
+            rgba(34,197,94,.10);
+
+        color:
+            #4ade80;
+
+        border-color:
+            rgba(74,222,128,.25);
+
+        box-shadow:
+            0 0 15px
+            rgba(34,197,94,.08);
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .footer {
+
+        text-align: center;
+
+        padding: 35px;
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        border-top:
+            1px solid
+            rgba(148,163,184,.08);
+    }
+
+
+    .footer-title {
+
+        color: #94a3b8;
+
+        font-size: 13px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .footer-tech {
+
+        color: #64748b;
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       ANIMATIONS
+    ===================================================== */
+
+    @keyframes fadeUp {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateY(30px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+    }
+
+
+    @keyframes slideLeft {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                translateX(-50px);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                translateX(0);
+        }
+    }
+
+
+    @keyframes scaleIn {
+
+        from {
+
+            opacity: 0;
+
+            transform:
+                scale(.93);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform:
+                scale(1);
+        }
+    }
+
+
+    @keyframes floatCard {
+
+        0%,
+        100% {
+
+            transform:
+                translateY(0);
+        }
+
+        50% {
+
+            transform:
+                translateY(-15px);
+        }
+    }
+
+
+    @keyframes orbFloat {
+
+        0%,
+        100% {
+
+            transform:
+                translate(0,0)
+                scale(1);
+        }
+
+        50% {
+
+            transform:
+                translate(50px,-40px)
+                scale(1.15);
+        }
+    }
+
+
+    @keyframes rotateSlow {
+
+        from {
+
+            transform:
+                rotate(0deg);
+        }
+
+        to {
+
+            transform:
+                rotate(360deg);
+        }
+    }
+
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+
+            transform:
+                scale(1);
+
+            opacity: 1;
+        }
+
+        50% {
+
+            transform:
+                scale(1.7);
+
+            opacity: .5;
+        }
+    }
+
+
+    @keyframes glowBorder {
+
+        0%,
+        100% {
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.35),
+
+                0 0 20px
+                rgba(59,130,246,.08);
+        }
+
+        50% {
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.35),
+
+                0 0 35px
+                rgba(59,130,246,.25);
+        }
+    }
+
+
+    @keyframes gradientMove {
+
+        0% {
+
+            background-position:
+                0% center;
+        }
+
+        100% {
+
+            background-position:
+                200% center;
+        }
+    }
+
+
+    @keyframes buttonGradient {
+
+        0%,
+        100% {
+
+            background-position:
+                0% 50%;
+        }
+
+        50% {
+
+            background-position:
+                100% 50%;
+        }
+    }
+
+
+    @keyframes imageScan {
+
+        0% {
+
+            top: -40%;
+
+            opacity: 0;
+        }
+
+        15% {
+
+            opacity: 1;
+        }
+
+        50% {
+
+            opacity: 1;
+        }
+
+        100% {
+
+            top: 120%;
+
+            opacity: 0;
+        }
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media (max-width: 1100px) {
+
+        .hero-animations {
+
+            right: 2%;
+
+            opacity: .55;
+        }
+
+
+        .header-content {
+
+            z-index: 6;
+        }
+
+
+        .cards {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+    }
+
+
+    @media (max-width: 800px) {
+
+        .header {
+
+            min-height: 620px;
+
+            padding:
+                60px 25px;
+
+            text-align: center;
+        }
+
+
+        .header-content {
+
+            margin: auto;
+        }
+
+
+        .hero-animations {
+
+            width: 400px;
+
+            height: 320px;
+
+            right: 50%;
+
+            top: auto;
+
+            bottom: -30px;
+
+            transform:
+                translateX(50%);
+
+            opacity: .35;
+        }
+
+
+        .main-animation {
+
+            width: 260px;
+
+            height: 210px;
+
+            right: 70px;
+        }
+
+
+        .small-animation {
+
+            width: 140px;
+
+            height: 110px;
+        }
+
+
+        .tech-tags {
+
+            justify-content:
+                center;
+        }
+
+
+        .pipeline {
+
+            overflow-x: auto;
+
+            justify-content:
+                flex-start;
+
+            padding: 10px;
+        }
+    }
+
+
+    @media (max-width: 600px) {
+
+        .header {
+
+            min-height: 650px;
+        }
+
+
+        .header h1 {
+
+            font-size: 39px;
+
+            letter-spacing:
+                -2px;
+        }
+
+
+        .header p {
+
+            font-size: 14px;
+        }
+
+
+        .hero-animations {
+
+            display: none;
+        }
+
+
+        .container {
+
+            width: 94%;
+
+            margin-top:
+                -35px;
+        }
+
+
+        .cards {
+
+            grid-template-columns:
+                1fr;
+        }
+
+
+        .section {
+
+            padding:
+                22px 15px;
+        }
+
+
+        .student-card p {
+
+            width: 100%;
+        }
+
+
+        .chart-wrapper {
+
+            width: 310px;
+
+            height: 310px;
+        }
+
+
+        .pipeline {
+
+            display: none;
+        }
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<!-- =====================================================
+     ANIMATED BACKGROUND
+===================================================== -->
+
+<div class="background-glow">
+
+
+<div class="glow-orb orb1"></div>
+
+<div class="glow-orb orb2"></div>
+
+<div class="glow-orb orb3"></div>
+
+
+</div>
+
+<!-- =====================================================
+     HERO HEADER
+===================================================== -->
+
+<header class="header">
+
+
+<div class="header-content">
+
+
+    <div class="badge">
+
+        <span class="live-dot"></span>
+
+        🤖 UNSUPERVISED MACHINE LEARNING
+
+    </div>
+
+
+    <h1>
+
+        Student Behaviour
+
+        <span>Analysis</span>
+
+    </h1>
+
+
+    <p>
+
+        Real-time analysis of student engagement using
+        K-Means clustering, PCA visualization and
+        DBSCAN-based behavioural analysis.
+
+    </p>
+
+
+    <div class="tech-tags">
+
+        <div class="tech-tag">
+
+            🧠 K-Means
+
+        </div>
+
+
+        <div class="tech-tag">
+
+            📐 PCA
+
+        </div>
+
+
+        <div class="tech-tag">
+
+            🔍 DBSCAN
+
+        </div>
+
+
+        <div class="tech-tag">
+
+            📊 Data Analytics
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =================================================
+     HERO IMAGES
+================================================== -->
+
+<div class="hero-animations">
+
+
+    <!-- AI ROBOT -->
+
+    <div class="animation-card main-animation">
+
+        <img
+            src="https://images.unsplash.com/photo-1737644467636-6b0053476bb2?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXJ0aWZpY2lhbCUyMGludGVsbGlnZW5jZSUyMHJvYm90fGVufDB8fDB8fHww"
+            alt="Artificial Intelligence Robot"
+        >
+
+        <div class="animation-overlay"></div>
+
+        <div class="animation-label">
+
+            🤖 AI ANALYSIS
+
+        </div>
+
+    </div>
+
+
+
+    <!-- NEURAL NETWORK -->
+
+    <div class="animation-card small-animation animation-one">
+
+        <img
+            src="https://images.unsplash.com/photo-1674027444485-cec3da58eef4?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bmV1cmFsJTIwbmV0d29yayUyMHZpc3VhbGl6YXRpb258ZW58MHx8MHx8fDA%3D"
+            alt="Neural Network Visualization"
+        >
+
+        <div class="animation-overlay"></div>
+
+        <div class="animation-label">
+
+            🧠 NEURAL NETWORK
+
+        </div>
+
+    </div>
+
+
+
+    <!-- DATA ANALYSIS -->
+
+    <div class="animation-card small-animation animation-two">
+
+        <img
+            src="https://plus.unsplash.com/premium_photo-1661872817492-fd0c30404d74?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGF0YSUyMGFuYWx5c2lzJTIwYW5pbWF0aW9ufGVufDB8fDB8fHww"
+            alt="Data Analysis"
+        >
+
+        <div class="animation-overlay"></div>
+
+        <div class="animation-label">
+
+            📊 DATA ANALYSIS
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</header>
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="container">
+
+
+<!-- =================================================
+     STATISTICS
+================================================== -->
+
+<div class="cards">
+
+
+    <div class="card">
+
+        <div class="card-icon">
+
+            👨‍🎓
+
+        </div>
+
+
+        <h2>
+
+            {{ total_students }}
+
+        </h2>
+
+
+        <p>
+
+            Total Students
+
+        </p>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <div class="card-icon">
+
+            🚀
+
+        </div>
+
+
+        <h2>
+
+            {{ high_engagement }}
+
+        </h2>
+
+
+        <p>
+
+            High Engagement
+
+        </p>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <div class="card-icon">
+
+            📊
+
+        </div>
+
+
+        <h2>
+
+            {{ moderate_engagement }}
+
+        </h2>
+
+
+        <p>
+
+            Moderate Engagement
+
+        </p>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <div class="card-icon">
+
+            ⚠️
+
+        </div>
+
+
+        <h2>
+
+            {{ low_engagement }}
+
+        </h2>
+
+
+        <p>
+
+            Low Engagement
+
+        </p>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =================================================
+     PREDICTION BUTTON
+================================================== -->
+
+<div class="prediction-section">
+
+    <a
+        href="/predict"
+        class="predict-button"
+    >
+
+        🔍
+
+        Real-Time Behaviour Prediction
+
+        →
+
+    </a>
+
+</div>
+
+
+
+<!-- =================================================
+     MACHINE LEARNING PIPELINE
+================================================== -->
+
+<section class="section">
+
+
+    <h2 class="section-title">
+
+        ⚙️ Machine Learning Pipeline
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        How the system transforms student data into
+        behavioural clusters
+
+    </p>
+
+
+    <div class="pipeline">
+
+
+        <div class="pipeline-step">
+
+            <div class="pipeline-box">
+
+                Student Data
+
+            </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow"></div>
+
+
+        <div class="pipeline-step">
+
+            <div class="pipeline-box">
+
+                Standardization
+
+            </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow"></div>
+
+
+        <div class="pipeline-step">
+
+            <div class="pipeline-box">
+
+                K-Means
+
+            </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow"></div>
+
+
+        <div class="pipeline-step">
+
+            <div class="pipeline-box">
+
+                PCA
+
+            </div>
+
+        </div>
+
+
+        <div class="pipeline-arrow"></div>
+
+
+        <div class="pipeline-step">
+
+            <div class="pipeline-box">
+
+                Behaviour
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =================================================
+     BEHAVIOUR CHART
+================================================== -->
+
+<section class="section chart-container">
+
+
+    <h2 class="section-title">
+
+        📊 Student Behaviour Distribution
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Distribution of students across K-Means
+        behavioural clusters
+
+    </p>
+
+
+    <div class="chart-wrapper">
+
+        <canvas id="behaviourChart"></canvas>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =================================================
+     INDIVIDUAL STUDENT ANALYSIS
+================================================== -->
+
+<section class="section student-selector">
+
+
+    <h2 class="section-title">
+
+        👨‍💻 Individual Student Analysis
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Select a student to view their behavioural profile
+
+    </p>
+
+
+    <select
+        id="studentSelect"
+        onchange="showStudent()"
+    >
+
+
+        <option value="">
+
+            Select a Student
+
+        </option>
+
+
+        {% for student in students %}
+
+        <option
+            value="{{ student.student_id }}"
+        >
+
+            Student {{ student.student_id }}
+
+        </option>
+
+        {% endfor %}
+
+
+    </select>
+
+
+    <div id="studentDetails"></div>
+
+
+</section>
+
+
+
+<!-- =================================================
+     STUDENT TABLE
+================================================== -->
+
+<section class="section table-container">
+
+
+    <h2 class="section-title">
+
+        🎓 Student Behaviour Details
+
+    </h2>
+
+
+    <p class="section-subtitle">
+
+        Machine-learning based behavioural classification
+
+    </p>
+
+
+    <table>
+
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Attendance</th>
+
+                <th>Study Hours</th>
+
+                <th>Assignment</th>
+
+                <th>Quiz</th>
+
+                <th>Participation</th>
+
+                <th>LMS Activity</th>
+
+                <th>Late Submissions</th>
+
+                <th>Screen Time</th>
+
+                <th>Behaviour</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+            {% for student in students %}
+
+
+            <tr>
+
+
+                <td>
+
+                    {{ student.student_id }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.attendance }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.study_hours }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.assignment_score }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.quiz_score }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.participation }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.lms_activity }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.late_submissions }}
+
+                </td>
+
+
+                <td>
+
+                    {{ student.screen_time }}
+
+                </td>
+
+
+                <td>
+
+
+                    {% if student.cluster == 0 %}
+
+                    <span class="low">
+
+                        Low Engagement
+
+                    </span>
+
+
+                    {% elif student.cluster == 1 %}
+
+                    <span class="moderate">
+
+                        Moderate Engagement
+
+                    </span>
+
+
+                    {% else %}
+
+                    <span class="high">
+
+                        High Engagement
+
+                    </span>
+
+
+                    {% endif %}
+
+
+                </td>
+
+
+            </tr>
+
+
+            {% endfor %}
+
+
+        </tbody>
+
+
+    </table>
+
+
+</section>
+
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+```
+<div class="footer-title">
+
+    🧠 Real-Time Student Behaviour Analysis
+
+</div>
+
+
+<div class="footer-tech">
+
+    K-Means Clustering
+
+    <span style="color:#3b82f6;">
+        •
+    </span>
+
+    PCA
+
+    <span style="color:#8b5cf6;">
+        •
+    </span>
+
+    DBSCAN
+
+    <span style="color:#06b6d4;">
+        •
+    </span>
+
+    Machine Learning
+
+</div>
+
+
+</footer>
+
+<!-- =====================================================
+     CHART.JS
+===================================================== -->
+
+<script>
+
+
+    const ctx =
+        document.getElementById(
+            'behaviourChart'
+        );
+
+
+    new Chart(
+        ctx,
+        {
+
+            type: 'doughnut',
+
+
+            data: {
+
+                labels: [
+
+                    'High Engagement',
+
+                    'Moderate Engagement',
+
+                    'Low Engagement'
+
+                ],
+
+
+                datasets: [{
+
+                    data: [
+
+                        {{ high_engagement }},
+
+                        {{ moderate_engagement }},
+
+                        {{ low_engagement }}
+
+                    ],
+
+
+                    backgroundColor: [
+
+                        '#22c55e',
+
+                        '#f59e0b',
+
+                        '#ef4444'
+
+                    ],
+
+
+                    borderColor:
+
+                        '#0f172a',
+
+
+                    borderWidth: 5,
+
+
+                    hoverOffset: 18
+
+                }]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: '65%',
+
+
+                animation: {
+
+                    animateRotate: true,
+
+                    animateScale: true,
+
+                    duration: 1800
+
+                },
+
+
+                plugins: {
+
+                    legend: {
+
+                        position: 'bottom',
+
+
+                        labels: {
+
+                            color:
+                                '#cbd5e1',
+
+                            padding: 20,
+
+                            usePointStyle: true,
+
+
+                            font: {
+
+                                size: 13,
+
+                                weight: '600'
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+</script>
+
+<!-- =====================================================
+     STUDENT ANALYSIS
+===================================================== -->
+
+<script>
+
+
+    const students =
+        {{ students | tojson }};
+
+
+
+    function showStudent() {
+
+
+        const id =
+            document.getElementById(
+                "studentSelect"
+            ).value;
+
+
+        if (!id) {
+
+            document.getElementById(
+                "studentDetails"
+            ).innerHTML = "";
+
+            return;
+        }
+
+
+        const student =
+            students.find(
+                s =>
+                    s.student_id == id
+            );
+
+
+        if (!student) {
+
+            return;
+        }
+
+
+        document.getElementById(
+            "studentDetails"
+        ).innerHTML = `
+
+            <div class="student-card">
+
+
+                <h3>
+
+                    👨‍🎓 Student
+                    ${student.student_id}
+
+                </h3>
+
+
+                <p>
+
+                    <strong>
+                        Attendance:
+                    </strong>
+
+                    ${student.attendance}%
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Study Hours:
+                    </strong>
+
+                    ${student.study_hours}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Assignment Score:
+                    </strong>
+
+                    ${student.assignment_score}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Quiz Score:
+                    </strong>
+
+                    ${student.quiz_score}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Participation:
+                    </strong>
+
+                    ${student.participation}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        LMS Activity:
+                    </strong>
+
+                    ${student.lms_activity}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Late Submissions:
+                    </strong>
+
+                    ${student.late_submissions}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Previous Performance:
+                    </strong>
+
+                    ${student.previous_performance}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Screen Time:
+                    </strong>
+
+                    ${student.screen_time}
+                    hours
+
+                </p>
+
+
+                <h3>
+
+                    Behaviour:
+                    ${student.behaviour}
+
+                </h3>
+
+
+            </div>
+
+        `;
+
+    }
+
+
+</script>
+
+</body>
+
+</html>

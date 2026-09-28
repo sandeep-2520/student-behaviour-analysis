@@ -77,7 +77,6 @@ student-behaviour-analysis/
 │
 └── templates/
     └── ...
-```
 
 ## ⚙️ Installation
 
@@ -89,43 +88,41 @@ git clone https://github.com/sandeep-2520/student-behaviour-analysis.git
 
 ### 2. Enter the project directory
 
-```bash
+
 cd student-behaviour-analysis
-```
+
 
 ### 3. Create a virtual environment
 
-```bash
+
 python3 -m venv venv
-```
+
 
 ### 4. Activate the virtual environment
 
 macOS/Linux:
 
-```bash
 source venv/bin/activate
-```
 
 Windows:
 
-```bash
+
 venv\Scripts\activate
-```
+
 
 ### 5. Install dependencies
 
-```bash
+
 pip install -r requirements.txt
-```
+
 
 ## ▶️ Running the Application
 
 Start the Flask application:
 
-```bash
+
 python app.py
-```
+
 
 The application will start on the local Flask server.
 
@@ -141,11 +138,10 @@ The dataset is processed before being passed to the machine-learning pipeline.
 
 The repository contains the trained model files:
 
-```text
 kmeans_model.pkl
 pca_model.pkl
 scaler.pkl
-```
+
 
 These files allow the application to use the trained preprocessing and machine-learning components.
 
@@ -180,3 +176,20 @@ https://github.com/sandeep-2520
 
 This project is intended for educational and demonstration purposes.
 
+## 📸 Screenshots
+
+### 🏠 Home Page
+
+![Home Page](screenshots/home.png)
+
+### 📊 Student Analysis
+
+![Student Analysis](screenshots/analysis.png)
+
+### 🔍 Behaviour Analysis Results
+
+![Results](screenshots/results.png)
+
+### 📈 Dashboard
+
+![Dashboard](screenshots/dashboard.png)

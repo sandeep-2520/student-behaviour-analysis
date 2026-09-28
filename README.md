@@ -19,7 +19,7 @@ The project processes student data, applies preprocessing and dimensionality red
 
 The project uses the following machine-learning workflow:
 
-```text
+
 Student Dataset
       ↓
 Data Preprocessing
@@ -60,7 +60,7 @@ This can make behavioural patterns easier to analyze and visualize.
 
 ## 📂 Project Structure
 
-```text
+
 student-behaviour-analysis/
 │
 ├── app.py
@@ -82,9 +82,9 @@ student-behaviour-analysis/
 
 ### 1. Clone the repository
 
-```bash
+
 git clone https://github.com/sandeep-2520/student-behaviour-analysis.git
-```
+
 
 ### 2. Enter the project directory
 
@@ -176,20 +176,4 @@ https://github.com/sandeep-2520
 
 This project is intended for educational and demonstration purposes.
 
-## 📸 Screenshots
 
-### 🏠 Home Page
-
-![Home Page](screenshots/home.png)
-
-### 📊 Student Analysis
-
-![Student Analysis](screenshots/analysis.png)
-
-### 🔍 Behaviour Analysis Results
-
-![Results](screenshots/results.png)
-
-### 📈 Dashboard
-
-![Dashboard](screenshots/dashboard.png)
